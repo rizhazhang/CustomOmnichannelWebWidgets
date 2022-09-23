@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Sample App</title>
+</head>
+
+<body style="margin: 0">
+  <script>
+    function lcw() {
+      return {
+        styleProps: {
+          generalStyles: {
+            width: "96%",
+            height: "96%",
+            top:"2%",
+            left:"2%",           
+            bottom: "2%",
+            right: "2%"
+          }
+        },
+        chatButtonProps: {
+          styleProps: {
+            generalStyleProps: {
+              position: "absolute"
+            }
+          }
+        },
+        webChatContainerProps: {
+          webChatStyles: {
+            hideUploadButton: false
+          }
+        }
+      }
+    }
+
+    // browser compatibility
+    var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+    var eventer = window[eventMethod];
+    var messageEvent = eventMethod === "attachEvent" ? "onmessage" : "message";
+
+    eventer(messageEvent, function (e) {
+      try {
+        localStorage.setItem(e.data.key, e.data.data);
+      }
+      catch (ex) {
+        console.log(ex);
+      }
+    });
+
+    // Raise event after data found in localStorage
+    if (localStorage.getItem("LcwChatWidgetState")) {
+      var evt = new CustomEvent("lcw:onWidgetStateUpdated", {
+        detail: {
+          key: "LcwChatWidgetState",
+          data: widgetData
+        }
+      });
+      window.dispatchEvent(evt);
+    }
+  </script>
+  <div id="oc-lcw-container" style="width: 100%; height: 100%; position: fixed; right: 0; bottom: 0"></div>
+  <script id="oc-lcw-script" src="./out.js" data-customization-callback="lcw" data-org-id="" data-app-id=""
+    data-org-url=""></script>
+</body>
+
+</html>
